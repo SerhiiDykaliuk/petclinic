@@ -33,10 +33,11 @@ pipeline {
         }
         stage ('docker push'){
             steps {
+                def pomVer = readMavenPom 'pom.xml'
                 script {
-                    GIT_COMMIT_HASH_SHORT = sh (script: "git log -n 1 --pretty=format:'%h'", returnStdout: true)
+                  //  GIT_COMMIT_HASH_SHORT = sh (script: "git log -n 1 --pretty=format:'%h'", returnStdout: true)
                     docker.withRegistry('https://245715980904.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:ecr-cr') {
-                        app.push("$GIT_COMMIT_HASH_SHORT")
+                        app.push("${pomVer.version}")
                         app.push("latest")
                     }
                 }

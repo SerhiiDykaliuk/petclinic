@@ -26,6 +26,7 @@ pipeline {
                 }
             }
         }
+
         stage ('Build docker image') {
             steps {
                 script {
@@ -37,8 +38,9 @@ pipeline {
             steps {
                 script {
                     def pomVer = readMavenPom file: 'pom.xml'
+                    VERSION = pomVer.version
                     docker.withRegistry("https://$ECR_ADDR", 'ecr:us-west-2:ecr-cr') {
-                        app.push("${pomVer.version}")
+                        app.push("$VERSION")
                         app.push("latest")
                     }
                 }
@@ -47,9 +49,9 @@ pipeline {
         stage('Remove local images') {
             steps {
                 script {
-                  def pomVer = readMavenPom file: 'pom.xml'
+              //    def pomVer = readMavenPom file: 'pom.xml'
                   sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:latest")
-                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:${pomVer.version}")
+                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:$VERSION")
                 }
             }
         }

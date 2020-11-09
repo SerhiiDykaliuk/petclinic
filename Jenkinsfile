@@ -45,7 +45,7 @@ pipeline {
                     def pomVer = readMavenPom file: 'pom.xml'
                     VERSION = pomVer.version
                     docker.withRegistry("https://$ECR_ADDR", 'ecr:us-west-2:ecr-cr') {
-                        app.push("$VERSIONBN-BN$BUILD_NUMBER")
+                        app.push("$VERSION-BN$BUILD_NUMBER")
                         app.push("latest")
                     }
                 }

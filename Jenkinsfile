@@ -22,7 +22,7 @@ pipeline {
         stage ('Build *.jar') {
             steps {
                 withMaven(maven: 'maven3') {
-                    sh "mvn clean test"
+                    sh "mvn clean package"
                 }
             }
             post {
@@ -45,7 +45,7 @@ pipeline {
                     def pomVer = readMavenPom file: 'pom.xml'
                     VERSION = pomVer.version
                     docker.withRegistry("https://$ECR_ADDR", 'ecr:us-west-2:ecr-cr') {
-                        app.push("$VERSION")
+                        app.push("$VERSIONBN-BN$BUILD_NUMBER")
                         app.push("latest")
                     }
                 }
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                   sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:latest")
-                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:$VERSION")
+                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:$VERSION-BN$BUILD_NUMBER")
                 }
             }
         }
@@ -83,9 +83,9 @@ pipeline {
             }
         }
     }
-  //  post {
-  //      always {
-  //          deleteDir()
-  //      }
-  //  }
+    post {
+        always {
+            deleteDir()
+        }
+    }
 }

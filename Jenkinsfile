@@ -49,7 +49,6 @@ pipeline {
         stage('Remove local images') {
             steps {
                 script {
-              //    def pomVer = readMavenPom file: 'pom.xml'
                   sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:latest")
                   sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:$VERSION")
                 }
@@ -79,9 +78,9 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            deleteDir()
-        }
-    }
+  //  post {
+  //      always {
+  //          deleteDir()
+  //      }
+  //  }
 }

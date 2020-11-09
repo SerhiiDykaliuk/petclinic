@@ -22,7 +22,7 @@ pipeline {
         stage ('Build *.jar') {
             steps {
                 withMaven(maven: 'maven3') {
-                    sh "mvn clean package"
+                    sh "mvn clean test"
                 }
             }
         }

@@ -6,6 +6,8 @@ pipeline {
     environment {
         SERVICE_CREDS = credentials('terraf-cr')
         DB_CREDS = credentials('database-cr')
+        ECR_ADDR = "245715980904.dkr.ecr.us-west-2.amazonaws.com"
+        ECR_REPO_NAME = "test-repo-1-prj-1"
     }
     stages {
         stage ('petclinic Checkout') {
@@ -27,7 +29,7 @@ pipeline {
         stage ('Build docker image') {
             steps {
                 script {
-                    app = docker.build("245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1")
+                    app = docker.build("$ECR_ADDR/$ECR_REPO_NAME")
                 }
             }
         }
@@ -35,8 +37,7 @@ pipeline {
             steps {
                 script {
                     def pomVer = readMavenPom file: 'pom.xml'
-                  //  GIT_COMMIT_HASH_SHORT = sh (script: "git log -n 1 --pretty=format:'%h'", returnStdout: true)
-                    docker.withRegistry('https://245715980904.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:ecr-cr') {
+                    docker.withRegistry("https://$ECR_ADDR", 'ecr:us-west-2:ecr-cr') {
                         app.push("${pomVer.version}")
                         app.push("latest")
                     }
@@ -47,8 +48,8 @@ pipeline {
             steps {
                 script {
                   def pomVer = readMavenPom file: 'pom.xml'
-                  sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:latest")
-                  sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:${pomVer.version}")
+                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:latest")
+                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:${pomVer.version}")
                 }
             }
         }

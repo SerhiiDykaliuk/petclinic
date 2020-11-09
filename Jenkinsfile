@@ -45,8 +45,11 @@ pipeline {
         }
         stage('Remove local images') {
             steps {
-                sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:latest")
-                sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:${pomVer.version}")
+                script {
+                  def pomVer = readMavenPom file: 'pom.xml'
+                  sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:latest")
+                  sh("docker rmi -f 245715980904.dkr.ecr.us-west-2.amazonaws.com/test-repo-1-prj-1:${pomVer.version}")
+                }
             }
         }
         stage ('pull tf') {

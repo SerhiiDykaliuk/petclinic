@@ -17,7 +17,7 @@ pipeline {
                 userRemoteConfigs: [[credentialsId: 'git2', url: 'git@github.com:SerhiiDykaliuk/petclinic.git']]])
             }
         }
-        stage ('build jar') {
+        stage ('Build *.jar') {
             steps {
                 withMaven(maven: 'maven3') {
                     sh "mvn clean package"
@@ -52,7 +52,7 @@ pipeline {
                 }
             }
         }
-        stage ('pull tf') {
+        stage ('Pull *.tf files') {
             steps {
                 dir ('terraform') {
                     checkout([$class: 'GitSCM',
@@ -63,7 +63,7 @@ pipeline {
                 }
             }
         }
-        stage('run TF') {
+        stage('Run Terraform') {
             environment {
                 AWS_ACCESS_KEY_ID = "$SERVICE_CREDS_USR"
                 AWS_SECRET_ACCESS_KEY = "$SERVICE_CREDS_PSW"

@@ -15,13 +15,6 @@ pipeline {
             }
         }
 
-        stage ('docker test') {
-            steps {
-                sh 'echo $USER'
-                sh 'docker run hello-world'
-            }
-        }
-
         stage ('petclinic Checkout') {
             steps {
  	            checkout([$class: 'GitSCM',
@@ -49,6 +42,9 @@ pipeline {
                 script {
                     def app = docker.build("$HUBUNAME/$REPONAME")
                     app.push("latest")
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+                        app.push("latest")
+                    }
                 }
             }
         }

@@ -4,7 +4,7 @@ pipeline {
     }
 
     environment {
-        DB_CREDS = credentials('database-cr')
+        // DB_CREDS = credentials('database-cr')
         HUBUNAME = "breeck"
         REPONAME = "petclinic"
     }

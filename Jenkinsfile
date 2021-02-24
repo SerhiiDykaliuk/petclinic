@@ -26,7 +26,7 @@ pipeline {
         }
         stage ('Build *.jar') {
             steps {
-                withMaven(maven: 'maven3') {
+                withMaven(maven: 'maven_main') {
                     sh "mvn clean package"
                 }
             }

@@ -40,20 +40,21 @@ pipeline {
         stage ('Build docker image') {
             steps {
                 script {
-                    app = docker.build("$HUBUNAME/$REPONAME")
+                    def app = docker.build("$HUBUNAME/$REPONAME")
+                    app.push("latest")
                 }
             }
         }
-        stage ('Push docker image'){
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
-                        // app.push("$VERSION-BN$BUILD_NUMBER")
-                        app.push("latest")
-                    }
-                }
-            }
-        }
+        // stage ('Push docker image'){
+        //     steps {
+        //         script {
+        //             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+        //                 // app.push("$VERSION-BN$BUILD_NUMBER")
+        //                 app.push("latest")
+        //             }
+        //         }
+        //     }
+        // }
         stage('Remove local images') {
             steps {
                 script {

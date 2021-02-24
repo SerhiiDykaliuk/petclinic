@@ -17,6 +17,7 @@ pipeline {
 
         stage ('docker test') {
             steps {
+                sh 'echo $USER'
                 sh 'docker run hello-world'
             }
         }

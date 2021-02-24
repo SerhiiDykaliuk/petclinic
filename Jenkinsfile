@@ -41,7 +41,6 @@ pipeline {
             steps {
                 script {
                     def app = docker.build("$HUBUNAME/$REPONAME")
-                    app.push("latest")
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
                         app.push("latest")
                     }

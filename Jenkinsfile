@@ -15,6 +15,12 @@ pipeline {
             }
         }
 
+        stage ('docker test') {
+            steps {
+                sh 'docker run hello-world'
+            }
+        }
+
         stage ('petclinic Checkout') {
             steps {
  	            checkout([$class: 'GitSCM',

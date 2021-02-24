@@ -21,7 +21,7 @@ pipeline {
                 branches: [[name: '*/gcp']],
                 doGenerateSubmoduleConfigurations: false,
                 extensions: [], submoduleCfg: [],
-                userRemoteConfigs: []])
+                userRemoteConfigs: [[url: 'https://github.com/SerhiiDykaliuk/petclinic.git']]])
             }
         }
         stage ('Build *.jar') {

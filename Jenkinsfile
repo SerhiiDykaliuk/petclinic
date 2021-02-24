@@ -3,10 +3,6 @@ pipeline {
         label 'master'
     }
 
-    tools {
-        dockerTool 'docker_1'
-    }
-
     environment {
         // DB_CREDS = credentials('database-cr')
         HUBUNAME = "breeck"

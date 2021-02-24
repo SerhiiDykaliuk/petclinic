@@ -5,12 +5,20 @@ pipeline {
 
     environment {
         DB_CREDS = credentials('database-cr')
+        HUBUNAME = "breeck"
+        REPONAME = "petclinic"
     }
     stages {
+        stage ('clean') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage ('petclinic Checkout') {
             steps {
  	            checkout([$class: 'GitSCM',
-                branches: [[name: '*/main']],
+                branches: [[name: '*/gcp']],
                 doGenerateSubmoduleConfigurations: false,
                 extensions: [], submoduleCfg: [],
                 userRemoteConfigs: []])
@@ -32,17 +40,15 @@ pipeline {
         stage ('Build docker image') {
             steps {
                 script {
-                    app = docker.build("$ECR_ADDR/$ECR_REPO_NAME")
+                    app = docker.build("$HUBUNAME/$REPONAME")
                 }
             }
         }
         stage ('Push docker image'){
             steps {
                 script {
-                    def pomVer = readMavenPom file: 'pom.xml'
-                    VERSION = pomVer.version
-                    docker.withRegistry("https://$ECR_ADDR", 'ecr:us-west-2:ecr-cr') {
-                        app.push("$VERSION-BN$BUILD_NUMBER")
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+                        // app.push("$VERSION-BN$BUILD_NUMBER")
                         app.push("latest")
                     }
                 }
@@ -51,15 +57,9 @@ pipeline {
         stage('Remove local images') {
             steps {
                 script {
-                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:latest")
-                  sh("docker rmi -f $ECR_ADDR/$ECR_REPO_NAME:$VERSION-BN$BUILD_NUMBER")
+                  sh("docker rmi -f $HUBUNAME/$REPONAME:latest")
                 }
             }
-        }
-    }
-    post {
-        always {
-            deleteDir()
         }
     }
 }

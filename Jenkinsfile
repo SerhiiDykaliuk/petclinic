@@ -18,10 +18,7 @@ pipeline {
         stage ('petclinic Checkout') {
             steps {
  	            checkout([$class: 'GitSCM',
-                branches: [[name: '*/gcp']],
-                doGenerateSubmoduleConfigurations: false,
-                extensions: [], submoduleCfg: [],
-                userRemoteConfigs: []])
+                branches: [[name: '*/gcp']]])
             }
         }
         stage ('Build *.jar') {
